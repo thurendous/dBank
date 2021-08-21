@@ -30,17 +30,16 @@ contract dBank {
     }
 
     function deposit() public payable {
-        //check if msg.sender didn't already deposited funds
-        // require(isDeposited[msg.sender], "you have already deposited active");
-        //check if msg.value is >= than 0.01 ETH
-        require(msg.value >= 1e16, "you need to deposit more than 0.01 ether");
-        etherBalanceOf[msg.sender] += msg.value;
-        depositStart[msg.sender] += block.timestamp;
-        //increase msg.sender ether deposit balance
-        //start msg.sender hodling ti me
-        //set msg.sender deposit status to true
-        isDeposited[msg.sender] = true;
-        //emit Deposit event
+        require(
+            isDeposited[msg.sender] == false,
+            "Error, deposit already active"
+        );
+        require(msg.value >= 1e16, "Error, deposit must be >= 0.01 ETH");
+
+        etherBalanceOf[msg.sender] = etherBalanceOf[msg.sender] + msg.value;
+        depositStart[msg.sender] = depositStart[msg.sender] + block.timestamp;
+
+        isDeposited[msg.sender] = true; //activate deposit status
         emit Deposit(msg.sender, msg.value, block.timestamp);
     }
 
